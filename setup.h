@@ -1,0 +1,2 @@
+int initialCold();
+int initialHot();
