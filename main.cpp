@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <setup.h>
 #include <functions.h>
+#include <iostream>
+#include <vector>
 
 int main(int argc, char** argv) {
     printf("Test:)");
