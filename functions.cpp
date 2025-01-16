@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <functions.h>
 
 int metropolis(int D, int N, float beta, float b, int seed, int N_config, bool config_type){}
 
