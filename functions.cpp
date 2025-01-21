@@ -17,7 +17,7 @@ int metropolis(int D, int N, float beta, float b, int seed, int N_config, bool c
         }
     } else {//call setup cold
         for (int i=0; i<N; i++){
-            for (j=0; j<N; j++){
+            for (int j=0; j<N; j++){
                 spin[i][j]=1;
             }
         }
@@ -29,7 +29,7 @@ int metropolis(int D, int N, float beta, float b, int seed, int N_config, bool c
             int jp = (j + 1) % N; //right neighbour
             int ip = (i + 1) % N; //bottom neighbour
             energy += spin[i][j]*spin[i][jp]; //horizontal contribution
-            energy += spin[i][j]*spin[ip][j] //vertical contribution
+            energy += spin[i][j]*spin[ip][j]; //vertical contribution
         }
     }
 
@@ -44,7 +44,8 @@ int metropolis(int D, int N, float beta, float b, int seed, int N_config, bool c
                 int im = (i-1+N)%N; //top neighbour, ensuring PBCs
 
                 int Sn = spin[i][j]; //spin at position (i,j)
-                int neighbour_sum += (spin[i][jp] + spin[i][jm] + spin[ip][j] + spin[im][j]);
+                int neighbour_sum = 0; //initialise sum
+                neighbour_sum += (spin[i][jp] + spin[i][jm] + spin[ip][j] + spin[im][j]);
                 float deltaH = 2*beta*Sn*neighbour_sum + 2*b*Sn;
 
                 //generate random number in [0,1]
