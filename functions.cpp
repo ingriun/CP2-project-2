@@ -52,16 +52,45 @@ tuple<vector<vector<int>>, double> metropolis(int D, int N, float beta, float b,
 
 int replica_method(int D, int N, float beta, float b, int N_config, function<vector<vector<int>>(int, int)> config_type = initialHot, int R = 500){
     vector<int> magnetisation(R, 0);
-    vector<int> energies(R, 0);
+    vector<double> energies(R, 0);
 
     for (int r = 0; r < R; r ++){
         int seed = time(NULL);
         //call metropolis algorithm for each step
         auto [spin, energy] = metropolis(D, N, beta, b, seed, N_config, config_type);
+
+        //calculate total spin for given configuration
         auto total_spin = accumulate(spin.begin(), spin.end(), 0);
+
+        //add total spin for the configuration to the magnetisattion
         magnetisation[r] = total_spin;
+
+        //add energy to total energies
         energies[r] = energy;
     }
 
+    //find the mean magnetisation
+    float magn_mean = 1/R * accumulate(magnetisation.begin(), magnetisation.end(), 0);
+
+    //find the error in magnetisation
+    for (int& element : magnetisation) {
+        element = pow(element - magn_mean, 2);
+    }
+    float magn_err = pow(1/(R*(R-1)) * accumulate(magnetisation.begin(), magnetisation.end(), 0), 1/2);
+
+    //expectation value for magnetisation
+    float magn_exp = magn_mean + magn_err;
+
+    //mean energy
+    double energy_mean = 1/R *  accumulate(energies.begin(), energies.end(), 0);
+
+    //find the error in magnetisation
+    for (double& element : energies) {
+        element = pow(element - energy_mean, 2);
+    }
+    float energy_err = pow(1/(R*(R-1)) * accumulate(energies.begin(), energies.end(), 0), 1/2);
+
+    //expectation value for magnetisation
+    float energy_exp = energy_mean + energy_err;
 
 }
