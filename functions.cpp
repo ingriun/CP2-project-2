@@ -1,11 +1,11 @@
 #include <stdbool.h>
 #include <functions.h>
+#include <tuple>
+#include <numeric>
 
-
-int metropolis(int D, int N, float beta, float b, int seed, int N_config, function<vector<vector<int>>(int, int)> config_type){
+tuple<vector<vector<int>>, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, function<vector<vector<int>>(int, int)> config_type){
     srand(seed); //set random seed
     double energy = 0.0;
-    int spin [N][N]; // 2D array of spins (+1 or -1)
     
     //initial condition
     vector<vector<int>> spin = config_type(D, N); 
@@ -46,8 +46,22 @@ int metropolis(int D, int N, float beta, float b, int seed, int N_config, functi
         }
     }
 
-    //return final spin config
-    return 0;
+    //return final spin config and energy as a tuple
+    return {spin, energy};
 }
 
-int replica_method(int D, int N, float beta, float b, int N_config, bool config_type){}
+int replica_method(int D, int N, float beta, float b, int N_config, function<vector<vector<int>>(int, int)> config_type = initialHot, int R = 500){
+    vector<int> magnetisation(R, 0);
+    vector<int> energies(R, 0);
+
+    for (int r = 0; r < R; r ++){
+        int seed = time(NULL);
+        //call metropolis algorithm for each step
+        auto [spin, energy] = metropolis(D, N, beta, b, seed, N_config, config_type);
+        auto total_spin = accumulate(spin.begin(), spin.end(), 0);
+        magnetisation[r] = total_spin;
+        energies[r] = energy;
+    }
+
+
+}
