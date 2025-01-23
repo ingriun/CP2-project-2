@@ -2,6 +2,7 @@
 #include <functions.h>
 #include <tuple>
 #include <numeric>
+#include <fstream>
 
 tuple<vector<vector<int>>, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, function<vector<vector<int>>(int, int)> config_type){
     srand(seed); //set random seed
@@ -94,5 +95,21 @@ int replica_method(int D, int N, float beta, float b, int N_config, function<vec
 
     //expectation value for energy
     double energy_exp = energy_mean + energy_err;
+    
+    //writing the result to file
+
+    std::ofstream magnetisationfile("magnetisation.txt");
+    magnetisationfile << magn_err, "\n";
+    magnetisationfile << magn_exp, "\n";
+    for(int i = 0; i < magnetisation.size(); i++){
+        magnetisationfile << magnetisation[i], ",";}
+    magnetisationfile.close();
+
+    std::ofstream energyfile("energy.txt");
+    energyfile << energy_err, "\n";
+    energyfile << energy_exp, "\n";
+    for(int i = 0; i < energies.size(); i++){
+        energyfile << energies[i], ",";}
+    energyfile.close();
 
 }
