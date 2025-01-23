@@ -73,10 +73,11 @@ int replica_method(int D, int N, float beta, float b, int N_config, function<vec
     float magn_mean = 1/R * accumulate(magnetisation.begin(), magnetisation.end(), 0);
 
     //find the error in magnetisation
+    float temp_magnetisation = 0; //temporary variable to find the error
     for (int& element : magnetisation) {
-        element = pow(element - magn_mean, 2);
+        temp_magnetisation += pow(element - magn_mean, 2);
     }
-    float magn_err = pow(1/(R*(R-1)) * accumulate(magnetisation.begin(), magnetisation.end(), 0), 1/2);
+    float magn_err = pow(1/(R*(R-1)) * temp_magnetisation, 1/2);
 
     //expectation value for magnetisation
     float magn_exp = magn_mean + magn_err;
@@ -84,13 +85,14 @@ int replica_method(int D, int N, float beta, float b, int N_config, function<vec
     //mean energy
     double energy_mean = 1/R *  accumulate(energies.begin(), energies.end(), 0);
 
-    //find the error in magnetisation
+    //find the error in energy
+    double temp_energy = 0; //temporary variable to find the error
     for (double& element : energies) {
-        element = pow(element - energy_mean, 2);
+        temp_energy += pow(element - energy_mean, 2);
     }
-    float energy_err = pow(1/(R*(R-1)) * accumulate(energies.begin(), energies.end(), 0), 1/2);
+    double energy_err = pow(1/(R*(R-1)) * temp_energy, 1/2);
 
-    //expectation value for magnetisation
-    float energy_exp = energy_mean + energy_err;
+    //expectation value for energy
+    double energy_exp = energy_mean + energy_err;
 
 }
