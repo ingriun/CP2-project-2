@@ -3,11 +3,12 @@
 #include <math.h>
 #include <time.h>
 #include <stdbool.h>
-#include <setup.h>
-#include <functions.h>
+#include "setup.h"
+#include "functions.h"
 #include <iostream>
 #include <vector>
 
-int main(int argc, char** argv) {
+int main() {
     cout << "test:)";
+    return 0;
 }

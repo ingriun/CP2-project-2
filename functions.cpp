@@ -1,5 +1,5 @@
 #include <stdbool.h>
-#include <functions.h>
+#include "functions.h"
 #include <tuple>
 #include <numeric>
 #include <fstream>

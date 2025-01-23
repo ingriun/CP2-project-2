@@ -1,4 +1,4 @@
-#include <setup.h>
+#include "setup.h"
 
 vector<vector<int>> initialCold(int D, int N){
     vector<vector<int>> magnet(N, vector<int>(N, 1));
