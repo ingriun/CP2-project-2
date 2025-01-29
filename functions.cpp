@@ -3,6 +3,7 @@
 #include <tuple>
 #include <numeric>
 #include <fstream>
+#include <math.h>
 
 tuple<vector<vector<int>>, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type){
     srand(seed); //set random seed
@@ -14,7 +15,7 @@ tuple<vector<vector<int>>, double> metropolis(int D, int N, float beta, float b,
         vector<vector<int>> spin = initialHot(D, N); 
     }
     else if (config_type = 'c'){
-        vector<vector<int>> spin = initialHot(D, N); 
+        vector<vector<int>> spin = initialCold(D, N); 
     }
     else{
         cout << "configuration type unknown" << endl;
