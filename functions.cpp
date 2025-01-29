@@ -1,20 +1,20 @@
 #include <stdbool.h>
 #include "functions.h"
-#include <tuple>
 #include <numeric>
 #include <fstream>
+using namespace std;
 
-tuple<vector<vector<int>>, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type){
+pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type){
     srand(seed); //set random seed
     double energy = 0.0;
-    vector<vector<int>> spin;
+    vector<vector<int> > spin;
     
     //initial condition
-    if(config_type = 'h'){
-        vector<vector<int>> spin = initialHot(D, N); 
+    if(config_type == 'h'){
+        spin = initialHot(D, N); 
     }
-    else if (config_type = 'c'){
-        vector<vector<int>> spin = initialHot(D, N); 
+    else if (config_type == 'c'){
+        spin = initialHot(D, N); 
     }
     else{
         cout << "configuration type unknown" << endl;
@@ -57,7 +57,7 @@ tuple<vector<vector<int>>, double> metropolis(int D, int N, float beta, float b,
     }
 
     //return final spin config and energy as a tuple
-    return {spin, energy};
+    return make_pair(spin, energy);
 }
 
 int replica_method(int D, int N, float beta, float b, int N_config, char config_type = 'h', int R = 500){
@@ -67,11 +67,17 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
     for (int r = 0; r < R; r ++){
         int seed = time(NULL);
         //call metropolis algorithm for each step
-        auto [spin, energy] = metropolis(D, N, beta, b, seed, N_config, config_type);
+        auto result = metropolis(D, N, beta, b, seed, N_config, config_type);
+        auto spin = std::get<0>(result);
+        auto energy = std::get<1>(result);
 
         //calculate total spin for given configuration
-        auto total_spin = accumulate(spin.begin(), spin.end(), 0);
-
+        int total_spin;
+        for (const auto& row : spin) {
+            for (const auto& s : row) {
+                total_spin += s;
+            }
+        }
         //add total spin for the configuration to the magnetisattion
         magnetisation[r] = total_spin;
 
@@ -109,12 +115,14 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
 
     std::ofstream magnetisationfile("magnetisation.txt");
     for(int i = 0; i < magnetisation.size(); i++){
-        magnetisationfile << magnetisation[i], ",";}
+        magnetisationfile << magnetisation[i] << endl;}
     magnetisationfile.close();
 
     std::ofstream energyfile("energy.txt");
     for(int i = 0; i < energies.size(); i++){
-        energyfile << energies[i], ",";}
+        energyfile << energies[i] << endl;}
     energyfile.close();
+
+    return 0;
 
 }
