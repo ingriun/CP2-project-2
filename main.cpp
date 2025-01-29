@@ -9,18 +9,35 @@
 #include <vector>
 
 int main(int argc, char** argv) {
-    cout << "test:)";
 
-    // Initialize the input variables
-    int D = atoi(argv[1]);
-    int N = atoi(argv[2]);
-    float beta = atof(argv[3]);
-    float b = atof(argv[4]);
-    int seed = atoi(argv[5]);
-    int N_config = atoi(argv[6]);
-    char config_type = (argv[7]);
+    if (argc != 8){
+        cout << "Error : number of arguments should be 7! \n";
+        cout << "Usage: ./ising D N beta b seed N_config config_type=['c'|'h']";
+    }
+    else {
+        // Initialize the input variables (using script.sh)
+        int D = atoi(argv[1]);
+        int N = atoi(argv[2]);
+        float beta = atof(argv[3]);
+        float b = atof(argv[4]);
+        int seed = atoi(argv[5]);
+        int N_config = atoi(argv[6]);
+        char config_type = argv[7][0];
 
-    metropolis(D, N, beta, b, seed, N_config, config_type);
+        // Call metropolis & save the outputs in 'spin' & 'energy'
+        auto result = metropolis(D, N, beta, b, seed, N_config, config_type);
+        auto spin = std::get<0>(result);
+        auto energy = std::get<1>(result);
+
+        // Calculate magnetisation
+        int total_spin=0;
+        for (const auto& row : spin) {
+            for (const auto& s : row) {
+                total_spin += s;
+            }
+        cout << total_spin;
+        }
+    }
 
     return 0;
 }

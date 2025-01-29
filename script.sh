@@ -1,7 +1,15 @@
 #! /bin/bash
 
-# This is the testing script!
+# Usage in terminal : bash script.sh
 
-g++ tests\ for\ compiling.cpp -o test
+# Be sure to be in the right directory (CP2-project-2) !!!
 
-./test 522 5
+D=2
+N=100
+beta=0.43
+b=0.01
+seed=28
+N_config=1000
+config_type='c'
+
+./ising $D $N $beta $b $seed $N_config $config_type
