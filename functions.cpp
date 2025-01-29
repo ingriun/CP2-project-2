@@ -4,12 +4,21 @@
 #include <numeric>
 #include <fstream>
 
-tuple<vector<vector<int>>, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, function<vector<vector<int>>(int, int)> config_type){
+tuple<vector<vector<int>>, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type){
     srand(seed); //set random seed
     double energy = 0.0;
+    vector<vector<int>> spin;
     
     //initial condition
-    vector<vector<int>> spin = config_type(D, N); 
+    if(config_type = 'h'){
+        vector<vector<int>> spin = initialHot(D, N); 
+    }
+    else if (config_type = 'c'){
+        vector<vector<int>> spin = initialHot(D, N); 
+    }
+    else{
+        cout << "configuration type unknown" << endl;
+    }
 
     //calculate initial energy
     for(int i = 0; i < N; i++){
@@ -51,7 +60,7 @@ tuple<vector<vector<int>>, double> metropolis(int D, int N, float beta, float b,
     return {spin, energy};
 }
 
-int replica_method(int D, int N, float beta, float b, int N_config, function<vector<vector<int>>(int, int)> config_type = initialHot, int R = 500){
+int replica_method(int D, int N, float beta, float b, int N_config, char config_type = 'h', int R = 500){
     vector<int> magnetisation(R, 0);
     vector<double> energies(R, 0);
 
@@ -70,7 +79,7 @@ int replica_method(int D, int N, float beta, float b, int N_config, function<vec
         energies[r] = energy;
     }
 
-    //find the mean magnetisation
+    /*//find the mean magnetisation
     float magn_mean = 1/R * accumulate(magnetisation.begin(), magnetisation.end(), 0);
 
     //find the error in magnetisation
@@ -94,20 +103,16 @@ int replica_method(int D, int N, float beta, float b, int N_config, function<vec
     double energy_err = pow(1/(R*(R-1)) * temp_energy, 1/2);
 
     //expectation value for energy
-    double energy_exp = energy_mean + energy_err;
+    double energy_exp = energy_mean + energy_err;*/
     
     //writing the result to file
 
     std::ofstream magnetisationfile("magnetisation.txt");
-    magnetisationfile << magn_err, "\n";
-    magnetisationfile << magn_exp, "\n";
     for(int i = 0; i < magnetisation.size(); i++){
         magnetisationfile << magnetisation[i], ",";}
     magnetisationfile.close();
 
     std::ofstream energyfile("energy.txt");
-    energyfile << energy_err, "\n";
-    energyfile << energy_exp, "\n";
     for(int i = 0; i < energies.size(); i++){
         energyfile << energies[i], ",";}
     energyfile.close();
