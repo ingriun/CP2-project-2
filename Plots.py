@@ -5,10 +5,11 @@ import numpy as np
 def thermalization():
 
     # Value of magnetization for each config
-    config = []
+    config = np.loadtxt("magnetisation.csv")
+    print(config)
 
     # indice of the current config
-    indice = np.arange(1,len(config))
+    indice = np.arange(1,len(config)+1)
 
     fig, ax = plt.subplots()
 
@@ -40,4 +41,4 @@ def magnetization_plot():
 
     plt.show()
 
-magnetization_plot()
+thermalization()

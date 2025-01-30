@@ -6,7 +6,7 @@
 # Be sure to be in the right directory (CP2-project-2) !!!
 
 D=2
-N=100
+N=10
 beta=0.43
 b=0.01
 seed=28

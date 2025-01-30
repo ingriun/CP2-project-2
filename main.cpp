@@ -26,17 +26,19 @@ int main(int argc, char** argv) {
 
         // Call metropolis & save the outputs in 'spin' & 'energy'
         auto result = metropolis(D, N, beta, b, seed, N_config, config_type);
-        auto spin = std::get<0>(result);
+
+        /*auto spin = std::get<0>(result);
         auto energy = std::get<1>(result);
 
         // Calculate magnetisation
         int total_spin=0;
-        for (const auto& row : spin) {
-            for (const auto& s : row) {
-                total_spin += s;
+        for (int i = 0; i<N; i++){
+            for (int j = 0; j<N; j++){
+                total_spin += spin[i][j];
             }
-        cout << total_spin;
         }
+        cout << total_spin;
+        */
     }
 
     return 0;

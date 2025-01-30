@@ -9,6 +9,8 @@ pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b,
     srand(seed); //set random seed
     double energy = 0.0;
     vector<vector<int> > spin;
+    vector<int> magnetisation(N_config, 0);
+    vector<double> energies(N_config, 0);
     
     //initial condition
     if(config_type == 'h'){
@@ -21,18 +23,29 @@ pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b,
         cout << "configuration type unknown" << endl;
     }
 
-    //calculate initial energy
-    for(int i = 0; i < N; i++){
-        for(int j = 0; j < N; j++){
-            int jp = (j + 1) % N; //right neighbour
-            int ip = (i + 1) % N; //bottom neighbour
-            energy += spin[i][j]*spin[i][jp]; //horizontal contribution
-            energy += spin[i][j]*spin[ip][j]; //vertical contribution
-        }
-    }
-
     //Metropolis Algorithm
     for (int n=0; n<N_config; n++){
+        
+        // Calculate magnetisation
+        int total_spin=0;
+        for (int i = 0; i<N; i++){
+            for (int j = 0; j<N; j++){
+                total_spin += spin[i][j];
+            }
+        }
+        magnetisation[n] = total_spin;
+
+        //calculate energy
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < N; j++){
+                int jp = (j + 1) % N; //right neighbour
+                int ip = (i + 1) % N; //bottom neighbour
+                energy += spin[i][j]*spin[i][jp]; //horizontal contribution
+                energy += spin[i][j]*spin[ip][j]; //vertical contribution
+            }
+        }
+        energies[n] = energy;
+
         for (int i=0; i<N; i++){
             for (int j=0; j<N; j++){
                 //compute ΔH
@@ -56,6 +69,16 @@ pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b,
             }
         }
     }
+    // Write outputs in files
+    std::ofstream magnetisationfile("magnetisation.csv");
+    for(int i = 0; i < magnetisation.size(); i++){
+        magnetisationfile << magnetisation[i] << endl;}
+    magnetisationfile.close();
+
+    std::ofstream energyfile("energy.csv");
+    for(int i = 0; i < energies.size(); i++){
+        energyfile << energies[i] << endl;}
+    energyfile.close();
 
     //return final spin config and energy as a tuple
     return make_pair(spin, energy);
