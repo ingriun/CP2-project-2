@@ -70,6 +70,17 @@ def average():
 
     return mean_mag, mean_energy 
 
+def varying_b_beta():
+
+    mag_arrays = np.loadtxt("magnetisation_varying_b_beta.txt", delimiter = '\n')
+    b_values = mag_arrays[0]
+    beta_values = np.linspace(0.1,5,49)
+    mag_array = np.array(x.split(',') for x in mag_arrays)
+
+    plt.plot(beta_values, mag_array[1])
+    
+
+
 
 thermalization()
 
