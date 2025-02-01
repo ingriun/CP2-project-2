@@ -5,18 +5,26 @@ import numpy as np
 def thermalization():
 
     # Value of magnetization for each config
-    config = np.loadtxt("magnetisation.csv")
-    print(config)
+    mag = np.loadtxt("magnetisation.csv")
 
     # indice of the current config
-    indice = np.arange(1,len(config)+1)
+    indice = np.arange(1,len(mag)+1)
 
     fig, ax = plt.subplots()
 
-    ax.plot(indice,config)
+    ax.plot(indice,mag)
 
     ax.set_xlabel("Indice")
     ax.set_ylabel("Magnetization M")
+
+    energy = np.loadtxt("energy.csv")
+
+    fig, ax1 = plt.subplots()
+
+    ax1.plot(indice,energy)
+
+    ax1.set_xlabel("Indice")
+    ax1.set_ylabel("Energy H")
 
     plt.show()
 
@@ -41,4 +49,30 @@ def magnetization_plot():
 
     plt.show()
 
+
+def average():
+
+    mag_all = 0
+    mag_array = np.loadtxt("magnetisation.csv")
+
+    for i in range(150,1000):
+        mag_all += mag_array[i]
+
+    mean_mag = 1/(1000 - 150)*mag_all
+
+    energy_all = 0
+    energy_array = np.loadtxt("energy.csv")
+
+    for i in range(150,1000):
+        energy_all += energy_array[i]
+
+    mean_energy = 1/(1000 - 150)*energy_all
+
+    return mean_mag, mean_energy 
+
+
 thermalization()
+
+mean_mag,mean_energy = average()
+print("Mean magnetisation : ", mean_mag)
+print("Mean energy : ", mean_energy)
