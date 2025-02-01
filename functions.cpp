@@ -149,7 +149,7 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
 
 }
 
-int varying_b_beta(int D, int N, int N_config, char config_type, int R){
+int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
     vector<float> b = {0.01, 0.005, 0.001, 0.0005};
     vector<float> beta(49); //want beta to go from 0.1 to 5
     for(int i = 0; i < 49; i++){

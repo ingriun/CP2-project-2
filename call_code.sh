@@ -12,5 +12,6 @@ b=0.01
 seed=28
 N_config=1000
 config_type='h'
+R=500
 
-./ising $D $N $beta $b $seed $N_config $config_type
+./ising $D $N $beta $b $seed $N_config $config_type $R

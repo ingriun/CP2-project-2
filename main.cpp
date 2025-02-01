@@ -10,7 +10,7 @@
 
 int main(int argc, char** argv) {
 
-    if (argc != 8){
+    if (argc != 9){
         cout << "Error : number of arguments should be 7! \n";
         cout << "Usage: ./ising D N beta b seed N_config config_type=['c'|'h']";
     }
@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
         int seed = atoi(argv[5]);
         int N_config = atoi(argv[6]);
         char config_type = argv[7][0];
+        int R = atoi(argv[8]);
 
         // Call metropolis & save the outputs in 'spin' & 'energy'
         auto result = metropolis(D, N, beta, b, seed, N_config, config_type);
