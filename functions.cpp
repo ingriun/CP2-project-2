@@ -148,3 +148,56 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
     return 0;
 
 }
+
+int varying_b_beta(int D, int N, int N_config, char config_type, int R){
+    vector<float> b = {0.01, 0.005, 0.001, 0.0005};
+    vector<float> beta(49); //want beta to go from 0.1 to 5
+    for(int i = 0; i < 49; i++){
+        beta[i] = 0.1 + i*0.1;
+    }
+    vector<vector<int> > magnetisation(b.size(), vector<int>(beta.size(), 1));
+    vector<vector<double> > energies(b.size(), vector<double>(beta.size(), 1));
+    for(int i = 0; i < b.size(); i++){
+        for(int j = 0; j < beta.size(); j++){
+        int seed = time(NULL);
+        //call metropolis algorithm for each step
+        auto result = metropolis(D, N, beta[j], b[i], seed, N_config, config_type);
+        auto spin = std::get<0>(result);
+        auto energy = std::get<1>(result);
+
+        //calculate total spin for given configuration
+        int total_spin;
+        for (const auto& row : spin) {
+            for (const auto& s : row) {
+                total_spin += s;
+            }
+        }
+        //add total spin for the configuration to the magnetisattion
+        magnetisation[i][j] = total_spin;
+
+        //add energy to total energies
+        energies[i][j] = energy;;
+        }
+    }
+
+    //writing result to file
+    std::ofstream magnetisationfile("magnetisation_varying_b_beta.txt");
+    for(int i = 0; i < b.size(); i++){
+        magnetisationfile << b.at(i), ',';}
+    for(int i = 0; i < b.size(); i++){
+        for(int j = 0; j < beta.size(); j++){
+            magnetisationfile << magnetisation[i][j], ',';}
+        magnetisationfile << '\n';}
+    magnetisationfile.close();
+
+    std::ofstream energyfile("energy_varying_b_beta.txt");
+    for(int i = 0; i < b.size(); i++){
+        energyfile << b.at(i), ',';}
+    for(int i = 0; i < b.size(); i++){
+        for(int j = 0; j < beta.size(); j++){
+            energyfile << energies[i][j], ',';}
+        energyfile << '\n';}
+    energyfile.close();
+
+    return 0;
+}
