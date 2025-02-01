@@ -40,8 +40,7 @@ pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b,
             for(int j = 0; j < N; j++){
                 int jp = (j + 1) % N; //right neighbour
                 int ip = (i + 1) % N; //bottom neighbour
-                energies[n] += spin[i][j]*spin[i][jp]; //horizontal contribution
-                energies[n] += spin[i][j]*spin[ip][j]; //vertical contribution
+                energies[n] += -beta*(spin[i][j]*spin[i][jp]+spin[i][j]*spin[ip][j]) - b*spin[i][j];
             }
         }
 
