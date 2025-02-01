@@ -169,7 +169,7 @@ int varying_b_beta(int D, int N, int N_config, char config_type, int R){
         int total_spin;
         for (const auto& row : spin) {
             for (const auto& s : row) {
-                total_spin += s;
+                total_spin += s; 
             }
         }
         //add total spin for the configuration to the magnetisattion
