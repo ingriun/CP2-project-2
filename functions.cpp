@@ -146,17 +146,17 @@ int varying_b_beta(int D, int N, int N_config, char config_type = 'h', int R=500
     for(int i = 0; i < 24; i++){
         beta[i] = 0.1 + i*0.2;
     }
-    vector<vector<float> > magnetisation(b.size(), vector<int>(beta.size(), 1));
+    vector<vector<float> > magnetisation(b.size(), vector<float>(beta.size(), 1));
     vector<vector<double> > energies(b.size(), vector<double>(beta.size(), 1));
     for(int i = 0; i < b.size(); i++){
         for(int j = 0; j < beta.size(); j++){
             auto result = replica_method(D, N, beta.at(j), b.at(i), N_config, config_type, R);
-            auto magn_temp = std::get<0>result;
-            float magn_mean = 1/R * accumulate(magn_temp[200], magn_temp.end(), 0); //change starting point later
+            auto magn_temp = get<0>(result);
+            float magn_mean = 1/R * accumulate(next(magn_temp.begin(), 200), magn_temp.end(), 0); //change starting point later
             magnetisation[i][j] = magn_mean;
 
-            auto energy_temp = std::get<1>result;
-            double energy_mean = 1/R *  accumulate(energies.begin(), energies.end(), 0);
+            auto energy_temp = get<1>(result);
+            double energy_mean = 1/R * accumulate(next(energy_temp.begin(), 200), energy_temp.end(), 0); //change starting point later
             energies[i][j] = energy_mean;
 
         }
@@ -186,10 +186,10 @@ int varying_b_beta(int D, int N, int N_config, char config_type = 'h', int R=500
     double energy_err = pow(1/(R*(R-1)) * temp_energy, 1/2);
 
     //expectation value for energy
-    double energy_exp = energy_mean + energy_err
+    double energy_exp = energy_mean + energy_err;
 
     //writing result to file
-    std::ofstream magnetisationfile("magnetisation_varying_b_beta.txt");
+    ofstream magnetisationfile("magnetisation_varying_b_beta.txt");
     for(int i = 0; i < b.size(); i++){
         magnetisationfile << b.at(i), ',';}
     for(int i = 0; i < b.size(); i++){
@@ -198,7 +198,7 @@ int varying_b_beta(int D, int N, int N_config, char config_type = 'h', int R=500
         magnetisationfile << '\n';}
     magnetisationfile.close();
 
-    std::ofstream energyfile("energy_varying_b_beta.txt");
+    ofstream energyfile("energy_varying_b_beta.txt");
     for(int i = 0; i < b.size(); i++){
         energyfile << b.at(i), ',';}
     for(int i = 0; i < b.size(); i++){
