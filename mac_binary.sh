@@ -6,4 +6,4 @@
 
 
 
-clang++ main.cpp setup.cpp functions.cpp -o ising
+clang++ --std=c++11 main.cpp setup.cpp functions.cpp -o ising
