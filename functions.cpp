@@ -3,6 +3,7 @@
 #include <numeric>
 #include <fstream>
 #include <math.h>
+#include <chrono>
 using namespace std;
 
 void output_metropolis(){
@@ -110,12 +111,14 @@ pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b,
     return make_pair(spin, energy);
 }
 
-int replica_method(int D, int N, float beta, float b, int N_config, char config_type = 'h', int R = 500){
+pair<vector<int>, vector<double> > replica_method(int D, int N, float beta, float b, int N_config, char config_type = 'h', int R = 500){
     vector<int> magnetisation(R, 0);
     vector<double> energies(R, 0);
 
+    auto start = std::chrono::system_clock::now();
+
     for (int r = 0; r < R; r ++){
-        int seed = time(NULL);
+        int seed = time(NULL) + r;
         //call metropolis algorithm for each step
         auto result = metropolis(D, N, beta, b, seed, N_config, config_type);
         auto spin = std::get<0>(result);
@@ -128,12 +131,17 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
                 total_spin += s;
             }
         }
+
+        //cout << seed << endl;
+
         //add total spin for the configuration to the magnetisattion
         magnetisation[r] = total_spin;
 
         //add energy to total energies
         energies[r] = energy;
     }
+
+    
 
     /*//find the mean magnetisation
     float magn_mean = 1/R * accumulate(magnetisation.begin(), magnetisation.end(), 0);
@@ -163,7 +171,16 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
     
     //writing the result to file
 
-    std::ofstream magnetisationfile("magnetisation.txt");
+    auto end = std::chrono::system_clock::now();
+
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+ 
+    std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s"
+              << std::endl;
+
+    /*std::ofstream magnetisationfile("magnetisation.txt");
     for(int i = 0; i < magnetisation.size(); i++){
         magnetisationfile << magnetisation[i] << endl;}
     magnetisationfile.close();
@@ -171,37 +188,29 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
     std::ofstream energyfile("energy.txt");
     for(int i = 0; i < energies.size(); i++){
         energyfile << energies[i] << endl;}
-    energyfile.close();
+    energyfile.close();*/
 
-    return 0;
+    return make_pair(magnetisation, energies);
 
 }
 
 int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
     vector<float> b = {0.01, 0.005, 0.001, 0.0005};
-    vector<float> beta(49); //want beta to go from 0.1 to 5
-    for(int i = 0; i < 49; i++){
-        beta[i] = 0.1 + i*0.1;
+    vector<float> beta(24); //want beta to go from 0.1 to 5
+    for(int i = 0; i < 24; i++){
+        beta[i] = 0.1 + i*0.2;
     }
-    vector<vector<int> > magnetisation(b.size(), vector<int>(beta.size(), 1));
-    vector<vector<double> > energies(b.size(), vector<double>(beta.size(), 1));
+    vector<vector<vector<int> > > magnetisation(b.size(), vector<vector<int> >(beta.size(), vector<int>(N_config,  1)));
+    vector<vector<vector<double> > > energies(b.size(), vector<vector<double> >(beta.size(), vector<double>(N_config, 1)));
     for(int i = 0; i < b.size(); i++){
         for(int j = 0; j < beta.size(); j++){
-        int seed = time(NULL);
         //call metropolis algorithm for each step
-        auto result = metropolis(D, N, beta[j], b[i], seed, N_config, config_type);
+        auto result = replica_method(D, N, beta[j], b[i], N_config, config_type, R);
         auto spin = std::get<0>(result);
         auto energy = std::get<1>(result);
 
-        //calculate total spin for given configuration
-        int total_spin;
-        for (const auto& row : spin) {
-            for (const auto& s : row) {
-                total_spin += s; 
-            }
-        }
         //add total spin for the configuration to the magnetisattion
-        magnetisation[i][j] = total_spin;
+        magnetisation[i][j] = spin;
 
         //add energy to total energies
         energies[i][j] = energy;;
@@ -211,19 +220,19 @@ int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
     //writing result to file
     std::ofstream magnetisationfile("magnetisation_varying_b_beta.txt");
     for(int i = 0; i < b.size(); i++){
-        magnetisationfile << b.at(i), ',';}
+        magnetisationfile << b.at(i) << ',';}
     for(int i = 0; i < b.size(); i++){
         for(int j = 0; j < beta.size(); j++){
-            magnetisationfile << magnetisation[i][j], ',';}
+            magnetisationfile << magnetisation[i][j] << ',';}
         magnetisationfile << '\n';}
     magnetisationfile.close();
 
     std::ofstream energyfile("energy_varying_b_beta.txt");
     for(int i = 0; i < b.size(); i++){
-        energyfile << b.at(i), ',';}
+        energyfile << b.at(i) << ',';}
     for(int i = 0; i < b.size(); i++){
         for(int j = 0; j < beta.size(); j++){
-            energyfile << energies[i][j], ',';}
+            energyfile << energies[i][j] << ',';}
         energyfile << '\n';}
     energyfile.close();
 
