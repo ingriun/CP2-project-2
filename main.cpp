@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
 
         // Create output files
         output_metropolis();
-        
+
         // Call metropolis & save the outputs in 'spin' & 'energy'
         auto result = replica_method(D, N, beta, b, N_config, config_type, R);
     }

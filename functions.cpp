@@ -74,35 +74,17 @@ pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b,
         }
     }
     // Write outputs in files
-    std::ifstream mag_empty; // magnetisation
-    mag_empty.open("magnetisation.csv");
-
     std::ofstream magnetisationfile;
-
-    if (mag_empty.peek() == std::ifstream::traits_type::eof()){
-        mag_empty.close();
-        magnetisationfile.open("magnetisation.csv", std::ios_base::app);
-        magnetisationfile << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
-        magnetisationfile.close();
-    }
     magnetisationfile.open("magnetisation.csv", std::ios_base::app);
+    magnetisationfile << "*\n" << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
     for(int i = 0; i < magnetisation.size(); i++){
         magnetisationfile << magnetisation[i] << endl;}
     magnetisationfile.close();
 
 
-    std::ifstream en_empty; // energy
-    en_empty.open("energy.csv");
-
     std::ofstream energyfile;
-
-    if (en_empty.peek() == std::ifstream::traits_type::eof()){
-        en_empty.close();
-        energyfile.open("energy.csv", std::ios_base::app);
-        energyfile << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
-        energyfile.close();
-    }
     energyfile.open("energy.csv", std::ios_base::app);
+    energyfile << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
     for(int i = 0; i < energies.size(); i++){
         energyfile << energies[i] << endl;}
     energyfile.close();
@@ -218,7 +200,7 @@ int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
     }
 
     //writing result to file
-    std::ofstream magnetisationfile("magnetisation_varying_b_beta.txt");
+    /* std::ofstream magnetisationfile("magnetisation_varying_b_beta.txt");
     for(int i = 0; i < b.size(); i++){
         magnetisationfile << b.at(i) << ',';}
     for(int i = 0; i < b.size(); i++){
@@ -235,6 +217,6 @@ int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
             energyfile << energies[i][j] << ',';}
         energyfile << '\n';}
     energyfile.close();
-
+    */
     return 0;
 }
