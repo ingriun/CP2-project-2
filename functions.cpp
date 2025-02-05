@@ -5,6 +5,11 @@
 #include <math.h>
 using namespace std;
 
+void output_metropolis(){
+    std::ofstream magnetisationfile("magnetisation.csv");
+    std::ofstream energyfile("energy.csv");
+}
+
 pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type){
     srand(seed); //set random seed
     double energy = 0.0;
@@ -68,12 +73,35 @@ pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b,
         }
     }
     // Write outputs in files
-    std::ofstream magnetisationfile("magnetisation.csv");
+    std::ifstream mag_empty; // magnetisation
+    mag_empty.open("magnetisation.csv");
+
+    std::ofstream magnetisationfile;
+
+    if (mag_empty.peek() == std::ifstream::traits_type::eof()){
+        mag_empty.close();
+        magnetisationfile.open("magnetisation.csv", std::ios_base::app);
+        magnetisationfile << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
+        magnetisationfile.close();
+    }
+    magnetisationfile.open("magnetisation.csv", std::ios_base::app);
     for(int i = 0; i < magnetisation.size(); i++){
         magnetisationfile << magnetisation[i] << endl;}
     magnetisationfile.close();
 
-    std::ofstream energyfile("energy.csv");
+
+    std::ifstream en_empty; // energy
+    en_empty.open("energy.csv");
+
+    std::ofstream energyfile;
+
+    if (en_empty.peek() == std::ifstream::traits_type::eof()){
+        en_empty.close();
+        energyfile.open("energy.csv", std::ios_base::app);
+        energyfile << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
+        energyfile.close();
+    }
+    energyfile.open("energy.csv", std::ios_base::app);
     for(int i = 0; i < energies.size(); i++){
         energyfile << energies[i] << endl;}
     energyfile.close();

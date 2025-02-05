@@ -1,6 +1,8 @@
 #include "setup.h"
 #include <utility>
 
+void output_metropolis();
+
 pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type);
 
 int replica_method(int D, int N, float beta, float b, int N_config, char config_type, int R);
