@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
         int R = atoi(argv[8]);
 
         // Call metropolis & save the outputs in 'spin' & 'energy'
-        auto result = metropolis(D, N, beta, b, seed, N_config, config_type);
+        auto result = replica_method(D, N, beta, b, N_config, config_type, R);
     }
 
     return 0;

@@ -3,6 +3,7 @@
 #include <numeric>
 #include <fstream>
 #include <math.h>
+#include <chrono>
 using namespace std;
 
 pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type){
@@ -86,6 +87,8 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
     vector<int> magnetisation(R, 0);
     vector<double> energies(R, 0);
 
+    auto start = std::chrono::system_clock::now();
+
     for (int r = 0; r < R; r ++){
         int seed = time(NULL);
         //call metropolis algorithm for each step
@@ -135,7 +138,16 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
     
     //writing the result to file
 
-    std::ofstream magnetisationfile("magnetisation.txt");
+    auto end = std::chrono::system_clock::now();
+
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+ 
+    std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s"
+              << std::endl;
+
+    /*std::ofstream magnetisationfile("magnetisation.txt");
     for(int i = 0; i < magnetisation.size(); i++){
         magnetisationfile << magnetisation[i] << endl;}
     magnetisationfile.close();
@@ -143,7 +155,7 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
     std::ofstream energyfile("energy.txt");
     for(int i = 0; i < energies.size(); i++){
         energyfile << energies[i] << endl;}
-    energyfile.close();
+    energyfile.close();*/
 
     return 0;
 
@@ -183,19 +195,19 @@ int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
     //writing result to file
     std::ofstream magnetisationfile("magnetisation_varying_b_beta.txt");
     for(int i = 0; i < b.size(); i++){
-        magnetisationfile << b.at(i), ',';}
+        magnetisationfile << b.at(i) << ',';}
     for(int i = 0; i < b.size(); i++){
         for(int j = 0; j < beta.size(); j++){
-            magnetisationfile << magnetisation[i][j], ',';}
+            magnetisationfile << magnetisation[i][j] << ',';}
         magnetisationfile << '\n';}
     magnetisationfile.close();
 
     std::ofstream energyfile("energy_varying_b_beta.txt");
     for(int i = 0; i < b.size(); i++){
-        energyfile << b.at(i), ',';}
+        energyfile << b.at(i) << ',';}
     for(int i = 0; i < b.size(); i++){
         for(int j = 0; j < beta.size(); j++){
-            energyfile << energies[i][j], ',';}
+            energyfile << energies[i][j] << ',';}
         energyfile << '\n';}
     energyfile.close();
 
