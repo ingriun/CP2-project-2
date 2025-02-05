@@ -11,7 +11,7 @@ void output_metropolis(){
     std::ofstream energyfile("energy.csv");
 }
 
-pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type){
+pair<vector<int>, vector<double>> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type){
     srand(seed); //set random seed
     double energy = 0.0;
     vector<vector<int> > spin;
@@ -89,8 +89,8 @@ pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b,
         energyfile << energies[i] << endl;}
     energyfile.close();
 
-    //return final spin config and energy as a tuple
-    return make_pair(spin, energy);
+    //return magnetisation & energy of each config (arrays)
+    return make_pair(magnetisation, energies);
 }
 
 pair<vector<int>, vector<double> > replica_method(int D, int N, float beta, float b, int N_config, char config_type = 'h', int R = 500){
@@ -103,10 +103,10 @@ pair<vector<int>, vector<double> > replica_method(int D, int N, float beta, floa
         int seed = time(NULL) + r;
         //call metropolis algorithm for each step
         auto result = metropolis(D, N, beta, b, seed, N_config, config_type);
-        auto spin = std::get<0>(result);
+        auto magnetisation = std::get<0>(result);
         auto energy = std::get<1>(result);
 
-        //calculate total spin for given configuration
+        /*//calculate total spin for given configuration
         int total_spin;
         for (const auto& row : spin) {
             for (const auto& s : row) {
@@ -120,7 +120,7 @@ pair<vector<int>, vector<double> > replica_method(int D, int N, float beta, floa
         magnetisation[r] = total_spin;
 
         //add energy to total energies
-        energies[r] = energy;
+        energies[r] = energy;*/
     }
 
     

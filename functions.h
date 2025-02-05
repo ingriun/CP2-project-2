@@ -3,7 +3,7 @@
 
 void output_metropolis();
 
-pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type);
+pair<vector<int>, vector<double>> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type);
 
 pair<vector<int>, vector<double> > replica_method(int D, int N, float beta, float b, int N_config, char config_type, int R);
 
