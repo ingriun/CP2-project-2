@@ -83,7 +83,7 @@ pair<vector<vector<int> >, double> metropolis(int D, int N, float beta, float b,
     return make_pair(spin, energy);
 }
 
-int replica_method(int D, int N, float beta, float b, int N_config, char config_type = 'h', int R = 500){
+pair<vector<int>, vector<double> > replica_method(int D, int N, float beta, float b, int N_config, char config_type = 'h', int R = 500){
     vector<int> magnetisation(R, 0);
     vector<double> energies(R, 0);
 
@@ -162,35 +162,27 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
         energyfile << energies[i] << endl;}
     energyfile.close();*/
 
-    return 0;
+    return make_pair(magnetisation, energies);
 
 }
 
 int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
     vector<float> b = {0.01, 0.005, 0.001, 0.0005};
-    vector<float> beta(49); //want beta to go from 0.1 to 5
-    for(int i = 0; i < 49; i++){
-        beta[i] = 0.1 + i*0.1;
+    vector<float> beta(24); //want beta to go from 0.1 to 5
+    for(int i = 0; i < 24; i++){
+        beta[i] = 0.1 + i*0.2;
     }
-    vector<vector<int> > magnetisation(b.size(), vector<int>(beta.size(), 1));
-    vector<vector<double> > energies(b.size(), vector<double>(beta.size(), 1));
+    vector<vector<vector<int> > > magnetisation(b.size(), vector<vector<int> >(beta.size(), vector<int>(N_config,  1)));
+    vector<vector<vector<double> > > energies(b.size(), vector<vector<double> >(beta.size(), vector<double>(N_config, 1)));
     for(int i = 0; i < b.size(); i++){
         for(int j = 0; j < beta.size(); j++){
-        int seed = time(NULL);
         //call metropolis algorithm for each step
-        auto result = metropolis(D, N, beta[j], b[i], seed, N_config, config_type);
+        auto result = replica_method(D, N, beta[j], b[i], N_config, config_type, R);
         auto spin = std::get<0>(result);
         auto energy = std::get<1>(result);
 
-        //calculate total spin for given configuration
-        int total_spin;
-        for (const auto& row : spin) {
-            for (const auto& s : row) {
-                total_spin += s; 
-            }
-        }
         //add total spin for the configuration to the magnetisattion
-        magnetisation[i][j] = total_spin;
+        magnetisation[i][j] = spin;
 
         //add energy to total energies
         energies[i][j] = energy;;
