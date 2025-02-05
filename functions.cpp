@@ -90,7 +90,7 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
     auto start = std::chrono::system_clock::now();
 
     for (int r = 0; r < R; r ++){
-        int seed = time(NULL);
+        int seed = time(NULL) + r;
         //call metropolis algorithm for each step
         auto result = metropolis(D, N, beta, b, seed, N_config, config_type);
         auto spin = std::get<0>(result);
@@ -103,12 +103,17 @@ int replica_method(int D, int N, float beta, float b, int N_config, char config_
                 total_spin += s;
             }
         }
+
+        //cout << seed << endl;
+
         //add total spin for the configuration to the magnetisattion
         magnetisation[r] = total_spin;
 
         //add energy to total energies
         energies[r] = energy;
     }
+
+    
 
     /*//find the mean magnetisation
     float magn_mean = 1/R * accumulate(magnetisation.begin(), magnetisation.end(), 0);
