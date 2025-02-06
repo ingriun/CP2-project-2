@@ -84,7 +84,7 @@ pair<vector<int>, vector<double>> metropolis(int D, int N, float beta, float b, 
 
     std::ofstream energyfile;
     energyfile.open("energy.csv", std::ios_base::app);
-    energyfile << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
+    energyfile << "*\n" << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
     for(int i = 0; i < energies.size(); i++){
         energyfile << energies[i] << endl;}
     energyfile.close();
