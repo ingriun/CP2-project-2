@@ -1,2 +1,4 @@
 ./ising
 .vscode
+./energy.csv
+./magnetisation.csv
