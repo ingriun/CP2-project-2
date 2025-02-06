@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
         output_metropolis();
 
         // Call metropolis & save the outputs in 'spin' & 'energy'
-        auto result = varying_b_beta(D, N, N_config, config_type, R);
+        auto result = replica_method(D, N, beta, b, N_config, config_type, R);
     }
 
     return 0;

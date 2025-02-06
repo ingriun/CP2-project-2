@@ -7,8 +7,8 @@
 using namespace std;
 
 void output_metropolis(){
-    std::ofstream magnetisationfile("magnetisation.csv");
-    std::ofstream energyfile("energy.csv");
+    std::ofstream magnetisationfile("magnetisationdata.csv");
+    std::ofstream energyfile("energydata.csv");
 }
 
 pair<vector<int>, vector<double>> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type){
@@ -75,7 +75,7 @@ pair<vector<int>, vector<double>> metropolis(int D, int N, float beta, float b, 
     }
     // Write outputs in files
     std::ofstream magnetisationfile;
-    magnetisationfile.open("magnetisation.csv", std::ios_base::app);
+    magnetisationfile.open("magnetisationdata.csv", std::ios_base::app);
     magnetisationfile << "*\n" << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
     for(int i = 0; i < magnetisation.size(); i++){
         magnetisationfile << magnetisation[i] << endl;}
@@ -83,7 +83,7 @@ pair<vector<int>, vector<double>> metropolis(int D, int N, float beta, float b, 
 
 
     std::ofstream energyfile;
-    energyfile.open("energy.csv", std::ios_base::app);
+    energyfile.open("energydata.csv", std::ios_base::app);
     energyfile << "*\n" << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
     for(int i = 0; i < energies.size(); i++){
         energyfile << energies[i] << endl;}
