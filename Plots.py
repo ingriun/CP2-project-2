@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import numpy as np
 import pandas as pd
+import csv
 
 """def split_large_csv():
     for i,chunk in enumerate(pd.read_csv('energy.csv', chunksize=501000)):
@@ -19,7 +20,7 @@ split_large_csv()"""
 
 
 
-def plot_data_subset(start_line: int=2, end_line: int=1002):
+"""def plot_data_subset(start_line: int=2, end_line: int=1002):
     data = pd.read_csv('energy_27.csv').iloc[start_line:end_line+1]
 
     plt.figure(figsize=(10,6))
@@ -36,7 +37,57 @@ def plot_data_subset(start_line: int=2, end_line: int=1002):
 
     plt.show()
 
-plot_data_subset(start_line=2, end_line=1002)
+plot_data_subset(start_line=2, end_line=1002)"""
+
+def calculate_mean_and_error(csv_filename: str, start_config: int=150, end_config: int=1000):
+    replica_means = []
+    current_replica_data = []
+
+    with open(csv_filename, 'r') as file:
+        reader = csv.reader(file)
+        
+        for row in reader:
+            if not row:
+                continue
+
+            #detect start of a new replica
+            if row[0] == '*':
+                if current_replica_data:
+                    #process the previous replica
+                    process_replica_data(current_replica_data, replica_means, start_config, end_config)
+                #reset for next replica and skip parameter line
+                current_replica_data=[]
+                inside_replica=True
+                next(reader, None)  #skip parameter line
+            else:
+                    #collect values for current replica
+                    try:
+                        current_replica_data.append(float(row[0]))
+                    except ValueError:
+                        continue
+        
+        if current_replica_data:
+            process_replica_data(current_replica_data, replica_means, start_config, end_config)
+
+    #compute expectation value and error
+    num_replicas = len(replica_means)
+    
+    expectation_value = np.mean(replica_means)
+    statistical_error = np.sqrt((1/(num_replicas*(num_replicas-1)))*np.sum((replica_means-expectation_value)**2))
+
+    print("Expectation Value:", expectation_value)
+    print("Statistical Error:", statistical_error)
+    return expectation_value, statistical_error
+
+def process_replica_data(data, replica_means, start_config, end_config):
+    """Process a single replica's data, compute the mean and append it to replica_means."""
+    if len(data) >= end_config:
+        thermalised_data = data[start_config:end_config]
+        mean_energy = np.mean(thermalised_data)
+        replica_means.append(mean_energy)
+
+csv_filename = 'magnetisationdata.csv'
+calculate_mean_and_error(csv_filename)
 
 """def thermalization():
 
