@@ -3,6 +3,7 @@ from matplotlib.ticker import MaxNLocator
 import numpy as np
 import pandas as pd
 import csv
+import random
 
 """def split_large_csv():
     for i,chunk in enumerate(pd.read_csv('energy.csv', chunksize=501000)):
@@ -19,9 +20,13 @@ import csv
 split_large_csv()"""
 
 
+travel = [x*1002 for x in range(1,501)]
+print(travel)
+def plot_data_subset(start_line: int=2, end_line: int=1002):
 
-"""def plot_data_subset(start_line: int=2, end_line: int=1002):
-    data = pd.read_csv('energy_27.csv').iloc[start_line:end_line+1]
+    N = random.choice(travel)
+    print("N = ", N)
+    data = pd.read_csv('energy_27.csv').iloc[start_line+N:end_line+1+N]
 
     plt.figure(figsize=(10,6))
 
@@ -37,7 +42,7 @@ split_large_csv()"""
 
     plt.show()
 
-plot_data_subset(start_line=2, end_line=1002)"""
+plot_data_subset(start_line=2, end_line=1002)
 
 def calculate_mean_and_error(csv_filename: str, start_config: int=150, end_config: int=1000):
     replica_means = []
@@ -86,8 +91,8 @@ def process_replica_data(data, replica_means, start_config, end_config):
         mean_energy = np.mean(thermalised_data)
         replica_means.append(mean_energy)
 
-csv_filename = 'magnetisationdata.csv'
-calculate_mean_and_error(csv_filename)
+    """csv_filename = 'magnetisationdata.csv'
+    calculate_mean_and_error(csv_filename)"""
 
 """def thermalization():
 
