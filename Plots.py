@@ -20,18 +20,26 @@ import random
 split_large_csv()"""
 
 
-travel = [x*1002 for x in range(1,501)]
-print(travel)
 def plot_data_subset(start_line: int=2, end_line: int=1002):
+    travel = [x*1002 for x in range(1,501)]
 
     N = random.choice(travel)
     print("N = ", N)
-    data = pd.read_csv('energy_27.csv').iloc[start_line+N:end_line+1+N]
+    #data = pd.read_csv('energy_24.csv').iloc[start_line+N:end_line+1+N]
+    #print(data)
+    data = pd.read_csv('energy_24.csv').iloc[start_line+N:end_line+1+N]  
+    data = data.apply(pd.to_numeric, errors='coerce') 
+    data = data.dropna()
 
     plt.figure(figsize=(10,6))
+    #x_axis = np.linspace(0,1000, 1001)
 
     for col in data.columns:
         plt.plot(data[col].values, label='Energy')
+    ##plt.plot(x_axis, data.values, label = "Energy")
+
+    plt.yscale('linear')  
+    plt.ylim(data.min().min(), data.max().max())  
 
     plt.xlabel('Configuration')
     plt.ylabel('Energy')
