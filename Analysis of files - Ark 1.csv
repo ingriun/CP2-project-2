@@ -1,5 +1,4 @@
-Energy,,,,,Magnetisation,,
-Beta,b,Mean,Error,Thermalisation,Mean,Error,Thermalisation
+Beta,b,Mean_1,Error_1,Thermalisation,Mean_2,Error_2,Thermalisation
 0.1,0.01,-205.2288,0.051,10,156.7661,0.0811,!!!!
 0.3,0.01,-205.2288,0.051,10,720.7546,0.6951,!!!!
 0.5,0.01,-8875.2375,0.3768,100,9161.3095,1.7501,70

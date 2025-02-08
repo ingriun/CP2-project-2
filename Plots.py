@@ -95,10 +95,36 @@ def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
 
     plt.show()
 
-csv_filename = 'magnetisation_53.csv'
+
+def magnetization_plot():
+
+    # x axis
+    mag = pd.read_csv("Analysis of files - Ark 1.csv").iloc[0:24]
+
+    beta = mag['Beta'].tolist()
+    print(beta)
+
+    # y axis
+    energy = mag['Mean_1'].tolist()
+    print(energy) 
+
+    #w/ error bars
+    en_err = mag['Error_1'].tolist()
+
+    fig, ax = plt.subplots()
+
+    ax.errorbar(beta, energy, en_err)
+
+    ax.set_xlabel("Temperature (k_b T)/J")
+    ax.set_ylabel("Exp value of magnetisation <M>")
+
+    plt.show()
+magnetization_plot()
+
+"""csv_filename = 'magnetisation_53.csv'
 plot_data_subset(csv_filename,start_line=2, end_line=1002)
 
-calculate_mean_and_error(csv_filename,start_config=200)
+calculate_mean_and_error(csv_filename,start_config=200)"""
 
 """def thermalization():
 
@@ -123,27 +149,6 @@ calculate_mean_and_error(csv_filename,start_config=200)
 
     ax1.set_xlabel("Indice")
     ax1.set_ylabel("Energy H")
-
-    plt.show()
-
-
-
-def magnetization_plot():
-
-    # x axis
-    temperature = [1,2,3,4,5,6,7,8,9,10]
-
-    # y axis
-    magnetization = [43,42,39.5,37,34,31,29,28,27.5,27.25]
-    #w/ error bars
-    mag_err = [1,1,1.4,2,2.3,1.3,1.5,1.6,1.2,1]
-
-    fig, ax = plt.subplots()
-
-    ax.errorbar(temperature, magnetization, mag_err)
-
-    ax.set_xlabel("Temperature (k_b T)/J")
-    ax.set_ylabel("Exp value of magnetization <M>")
 
     plt.show()
 
