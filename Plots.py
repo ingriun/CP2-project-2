@@ -20,38 +20,6 @@ import random
 split_large_csv()"""
 
 
-def plot_data_subset(start_line: int=2, end_line: int=1002):
-    travel = [x*1002 for x in range(1,501)]
-
-    N = random.choice(travel)
-    print("N = ", N)
-    #data = pd.read_csv('energy_24.csv').iloc[start_line+N:end_line+1+N]
-    #print(data)
-    data = pd.read_csv('energy_24.csv').iloc[start_line+N:end_line+1+N]  
-    data = data.apply(pd.to_numeric, errors='coerce') 
-    data = data.dropna()
-
-    plt.figure(figsize=(10,6))
-    #x_axis = np.linspace(0,1000, 1001)
-
-    for col in data.columns:
-        plt.plot(data[col].values, label='Energy')
-    ##plt.plot(x_axis, data.values, label = "Energy")
-
-    plt.yscale('linear')  
-    plt.ylim(data.min().min(), data.max().max())  
-
-    plt.xlabel('Configuration')
-    plt.ylabel('Energy')
-    plt.title('Energy')
-
-    ax = plt.gca()
-    ax.yaxis.set_major_locator(MaxNLocator(nbins=10))  # Maximum 10 y-ticks
-
-    plt.show()
-
-plot_data_subset(start_line=2, end_line=1002)
-
 def calculate_mean_and_error(csv_filename: str, start_config: int=150, end_config: int=1000):
     replica_means = []
     current_replica_data = []
@@ -99,8 +67,38 @@ def process_replica_data(data, replica_means, start_config, end_config):
         mean_energy = np.mean(thermalised_data)
         replica_means.append(mean_energy)
 
-    """csv_filename = 'magnetisationdata.csv'
-    calculate_mean_and_error(csv_filename)"""
+
+def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
+    travel = [x*1002 for x in range(1,500)]
+
+    N = random.choice(travel)
+    print("N = ", N)
+
+    data = pd.read_csv(csv_filename).iloc[start_line+N:end_line+1+N]  
+    data = data.apply(pd.to_numeric, errors='coerce') 
+    data = data.dropna()
+
+    plt.figure(figsize=(10,6))
+
+    for col in data.columns:
+        plt.plot(data[col].values, label='Energy')
+
+    plt.yscale('linear')  
+    plt.ylim(data.min().min(), data.max().max())  
+
+    plt.xlabel('Configuration')
+    plt.ylabel('Energy')
+    plt.title('Energy')
+
+    ax = plt.gca()
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=10))  # Maximum 10 y-ticks
+
+    plt.show()
+
+csv_filename = 'magnetisation_53.csv'
+plot_data_subset(csv_filename,start_line=2, end_line=1002)
+
+calculate_mean_and_error(csv_filename,start_config=200)
 
 """def thermalization():
 
