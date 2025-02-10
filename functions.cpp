@@ -23,7 +23,7 @@ pair<vector<int>, vector<double>> metropolis(int D, int N, float beta, float b, 
         spin = initialHot(D, N); 
     }
     else if (config_type == 'c'){
-        spin = initialHot(D, N); 
+        spin = initialCold(D, N); 
     }
     else{
         cout << "configuration type unknown" << endl;
@@ -105,75 +105,16 @@ pair<vector<int>, vector<double> > replica_method(int D, int N, float beta, floa
         auto result = metropolis(D, N, beta, b, seed, N_config, config_type);
         auto magnetisation = std::get<0>(result);
         auto energy = std::get<1>(result);
-
-        /*//calculate total spin for given configuration
-        int total_spin;
-        for (const auto& row : spin) {
-            for (const auto& s : row) {
-                total_spin += s;
-            }
-        }
-
-        //cout << seed << endl;
-
-        //add total spin for the configuration to the magnetisattion
-        magnetisation[r] = total_spin;
-
-        //add energy to total energies
-        energies[r] = energy;*/
     }
-
     
-
-    /*//find the mean magnetisation
-    float magn_mean = 1/R * accumulate(magnetisation.begin(), magnetisation.end(), 0);
-
-    //find the error in magnetisation
-    float temp_magnetisation = 0; //temporary variable to find the error
-    for (int& element : magnetisation) {
-        temp_magnetisation += pow(element - magn_mean, 2);
-    }
-    float magn_err = pow(1/(R*(R-1)) * temp_magnetisation, 1/2);
-
-    //expectation value for magnetisation
-    float magn_exp = magn_mean + magn_err;
-
-    //mean energy
-    double energy_mean = 1/R *  accumulate(energies.begin(), energies.end(), 0);
-
-    //find the error in energy
-    double temp_energy = 0; //temporary variable to find the error
-    for (double& element : energies) {
-        temp_energy += pow(element - energy_mean, 2);
-    }
-    double energy_err = pow(1/(R*(R-1)) * temp_energy, 1/2);
-
-    //expectation value for energy
-    double energy_exp = energy_mean + energy_err;*/
-    
-    //writing the result to file
-
     auto end = std::chrono::system_clock::now();
-
     std::chrono::duration<double> elapsed_seconds = end-start;
     std::time_t end_time = std::chrono::system_clock::to_time_t(end);
- 
     std::cout << "finished computation at " << std::ctime(&end_time)
               << "elapsed time: " << elapsed_seconds.count() << "s"
               << std::endl;
 
-    /*std::ofstream magnetisationfile("magnetisation.txt");
-    for(int i = 0; i < magnetisation.size(); i++){
-        magnetisationfile << magnetisation[i] << endl;}
-    magnetisationfile.close();
-
-    std::ofstream energyfile("energy.txt");
-    for(int i = 0; i < energies.size(); i++){
-        energyfile << energies[i] << endl;}
-    energyfile.close();*/
-
     return make_pair(magnetisation, energies);
-
 }
 
 int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
@@ -198,25 +139,5 @@ int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
         energies[i][j] = energy;;
         }
     }
-
-    //writing result to file
-    /* std::ofstream magnetisationfile("magnetisation_varying_b_beta.txt");
-    for(int i = 0; i < b.size(); i++){
-        magnetisationfile << b.at(i) << ',';}
-    for(int i = 0; i < b.size(); i++){
-        for(int j = 0; j < beta.size(); j++){
-            magnetisationfile << magnetisation[i][j] << ',';}
-        magnetisationfile << '\n';}
-    magnetisationfile.close();
-
-    std::ofstream energyfile("energy_varying_b_beta.txt");
-    for(int i = 0; i < b.size(); i++){
-        energyfile << b.at(i) << ',';}
-    for(int i = 0; i < b.size(); i++){
-        for(int j = 0; j < beta.size(); j++){
-            energyfile << energies[i][j] << ',';}
-        energyfile << '\n';}
-    energyfile.close();
-    */
     return 0;
 }

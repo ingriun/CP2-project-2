@@ -20,7 +20,7 @@ import random
 split_large_csv()"""
 
 
-def calculate_mean_and_error(csv_filename: str, start_config: int=150, end_config: int=1000):
+def calculate_mean_and_error(csv_filename: str, start_config: int=100, end_config: int=1000):
     replica_means = []
     current_replica_data = []
 
@@ -64,8 +64,8 @@ def process_replica_data(data, replica_means, start_config, end_config):
     """Process a single replica's data, compute the mean and append it to replica_means."""
     if len(data) >= end_config:
         thermalised_data = data[start_config:end_config]
-        mean_energy = np.mean(thermalised_data)
-        replica_means.append(mean_energy)
+        mean_value = np.mean(thermalised_data)
+        replica_means.append(mean_value)
 
 
 def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
@@ -85,10 +85,10 @@ def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
 
     plt.yscale('linear')  
     plt.ylim(data.min().min(), data.max().max())  
-
-    plt.xlabel('Configuration')
+    plt.xlim(0,1000)
+    plt.xlabel('Configurations')
     plt.ylabel('Energy')
-    plt.title('Energy')
+    plt.title('Energy over 1000 Configurations')
 
     ax = plt.gca()
     ax.yaxis.set_major_locator(MaxNLocator(nbins=10))  # Maximum 10 y-ticks
@@ -119,63 +119,10 @@ def magnetization_plot():
     ax.set_ylabel("Exp value of magnetisation <M>")
 
     plt.show()
-magnetization_plot()
+#magnetization_plot()
 
-"""csv_filename = 'magnetisation_53.csv'
-plot_data_subset(csv_filename,start_line=2, end_line=1002)
+csv_filename = 'energydata.csv'
+#plot_data_subset(csv_filename,start_line=2, end_line=1002)
 
-calculate_mean_and_error(csv_filename,start_config=200)"""
+calculate_mean_and_error(csv_filename,start_config=100, end_config=1000)
 
-"""def thermalization():
-
-    # Value of magnetization for each config
-    mag = np.loadtxt("magnetisationdata.csv")
-
-    # indice of the current config
-    indice = np.arange(1,len(mag)+1)
-
-    fig, ax = plt.subplots()
-
-    ax.plot(indice,mag)
-
-    ax.set_xlabel("Indice")
-    ax.set_ylabel("Magnetization M")
-
-    energy = np.loadtxt("energydata.csv")
-
-    fig, ax1 = plt.subplots()
-
-    ax1.plot(indice,energy)
-
-    ax1.set_xlabel("Indice")
-    ax1.set_ylabel("Energy H")
-
-    plt.show()
-
-
-def average():
-
-    mag_all = 0
-    mag_array = np.loadtxt("magnetisationdata.csv")
-
-    for i in range(150,1000):
-        mag_all += mag_array[i]
-
-    mean_mag = 1/(1000 - 150)*mag_all
-
-    energy_all = 0
-    energy_array = np.loadtxt("energydata.csv")
-
-    for i in range(150,1000):
-        energy_all += energy_array[i]
-
-    mean_energy = 1/(1000 - 150)*energy_all
-
-    return mean_mag, mean_energy 
-
-
-#thermalization()
-
-mean_mag,mean_energy = average()
-print("Mean magnetisation : ", mean_mag)
-print("Mean energy : ", mean_energy)"""
