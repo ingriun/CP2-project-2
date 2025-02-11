@@ -6,5 +6,4 @@
 
 
 
-g++ main.cpp setup.cpp functions.cpp -o ising
-
+clang++ --std=c++11 src/main.cpp src/setup.cpp src/functions.cpp -o binary/ising

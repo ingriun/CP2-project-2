@@ -6,4 +6,5 @@
 
 
 
-clang++ --std=c++11 main.cpp setup.cpp functions.cpp -o ising
+g++ src/main.cpp src/setup.cpp src/functions.cpp -o ising
+

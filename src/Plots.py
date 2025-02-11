@@ -99,7 +99,7 @@ def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
 def magnetization_plot():
 
     # x axis
-    mag = pd.read_csv("Analysis of files - Ark 1.csv").iloc[0:24]
+    mag = pd.read_csv("data/analysis/Analysis of files - Ark 1.csv").iloc[0:24]
 
     beta = mag['Beta'].tolist()
     print(beta)
@@ -121,7 +121,7 @@ def magnetization_plot():
     plt.show()
 #magnetization_plot()
 
-csv_filename = 'energydata.csv'
+csv_filename = 'data/energy/energydata.csv'
 #plot_data_subset(csv_filename,start_line=2, end_line=1002)
 
 calculate_mean_and_error(csv_filename,start_config=100, end_config=1000)

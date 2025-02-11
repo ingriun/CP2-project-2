@@ -1,2 +1,2 @@
-energy.csv filter=lfs diff=lfs merge=lfs -text
-magnetisation.csv filter=lfs diff=lfs merge=lfs -text
+data/energy/energy.csv filter=lfs diff=lfs merge=lfs -text
+data/magnetisation/magnetisation.csv filter=lfs diff=lfs merge=lfs -text
