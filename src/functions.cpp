@@ -7,8 +7,8 @@
 using namespace std;
 
 void output_metropolis(){
-    std::ofstream magnetisationfile("data/magnetisation/magnetisationdata.csv");
-    std::ofstream energyfile("data/energy/energydata.csv");
+    std::ofstream magnetisationfile("magnetisationdata3to5.csv");
+    std::ofstream energyfile("energydata3to5.csv");
 }
 
 pair<vector<int>, vector<double>> metropolis(int D, int N, float beta, float b, int seed, int N_config, char config_type){
@@ -75,7 +75,7 @@ pair<vector<int>, vector<double>> metropolis(int D, int N, float beta, float b, 
     }
     // Write outputs in files
     std::ofstream magnetisationfile;
-    magnetisationfile.open("data/magnetisation/magnetisationdata.csv", std::ios_base::app);
+    magnetisationfile.open("magnetisationdata3to5.csv", std::ios_base::app);
     magnetisationfile << "*\n" << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
     for(int i = 0; i < magnetisation.size(); i++){
         magnetisationfile << magnetisation[i] << endl;}
@@ -83,7 +83,7 @@ pair<vector<int>, vector<double>> metropolis(int D, int N, float beta, float b, 
 
 
     std::ofstream energyfile;
-    energyfile.open("data/energy/energydata.csv", std::ios_base::app);
+    energyfile.open("energydata3to5.csv", std::ios_base::app);
     energyfile << "*\n" << "D = " << D << " ; " << "N = " << N << " ; " << "beta = " << beta << " ; " << "b = " << b << " ; " << "seed = " << seed << " ; " << "N_config = " << N_config << " ; "<< "config_type = " << config_type << " ; \n";
     for(int i = 0; i < energies.size(); i++){
         energyfile << energies[i] << endl;}
@@ -119,10 +119,10 @@ pair<vector<int>, vector<double> > replica_method(int D, int N, float beta, floa
 
 int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
     vector<float> b = {0.01, 0.005, 0.001, 0.0005};
-    vector<float> beta(24); //want beta to go from 0.1 to 5
-    for(int i = 0; i < 24; i++){
+    vector<float> beta = {1/3.0, 1/3.4, 1/3.8, 1/4.2, 1/4.6,1/5.0}; 
+    /*for(int i = 0; i < 24; i++){
         beta[i] = 0.1 + i*0.2;
-    }
+    }*/
     vector<vector<vector<int> > > magnetisation(b.size(), vector<vector<int> >(beta.size(), vector<int>(N_config,  1)));
     vector<vector<vector<double> > > energies(b.size(), vector<vector<double> >(beta.size(), vector<double>(N_config, 1)));
     for(int i = 0; i < b.size(); i++){

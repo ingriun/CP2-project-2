@@ -1,7 +1,7 @@
 
 #! /bin/bash
 
-# Usage in terminal : bash call_code.sh
+# Usage in terminal : bash scripts/call_code.sh
 
 # Be sure to be in the right directory (CP2-project-2) !!!
 
