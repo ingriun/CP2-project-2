@@ -2,17 +2,18 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import csv
 import random
 
 """def split_large_csv():
-    for i,chunk in enumerate(pd.read_csv('energy.csv', chunksize=501000)):
-        filename = f'energy_{i}.csv'
+    for i,chunk in enumerate(pd.read_csv('data/energybeta2to3.csv', chunksize=501000)):
+        filename = f'energybeta_{i}.csv'
         chunk.to_csv(filename, index=False)
         print(f'created: {filename}')
 
-    for j,chunk in enumerate(pd.read_csv('magnetisation.csv', chunksize=501000)):
-        filename = f'magnetisation_{j}.csv' 
+    for j,chunk in enumerate(pd.read_csv('data/magnetisationbeta2to3.csv', chunksize=501000)):
+        filename = f'magnetisationbeta_{j}.csv' 
         chunk.to_csv(filename, index=False)
         print(f'created: {filename}')
 
@@ -85,7 +86,7 @@ def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
 
     plt.yscale('linear')  
     plt.ylim(data.min().min(), data.max().max())  
-    plt.xlim(0,1000)
+    plt.xlim(0,100000)
     plt.xlabel('Configurations')
     plt.ylabel('Energy')
     plt.title('Energy over 1000 Configurations')
@@ -121,8 +122,38 @@ def magnetization_plot():
     plt.show()
 #magnetization_plot()
 
-csv_filename = 'data/energy/energydata.csv'
-#plot_data_subset(csv_filename,start_line=2, end_line=1002)
+csv_filename = 'magnetisationdata.csv'
+#calculate_mean_and_error(csv_filename, start_config=10000, end_config=100000)
+#plot_data_subset(csv_filename,start_line=2, end_line=100002)
 
-calculate_mean_and_error(csv_filename,start_config=100, end_config=1000)
+"""for i in range (20):
+    csv_filename = f'magnetisationbeta_{i}.csv'
+    calculate_mean_and_error(csv_filename,start_config=100, end_config=1000)"""
+
+def load_data(file):
+    data = []
+    with open(file, "r") as f:
+        for i, line in enumerate(f):
+            if (i%1002) in [0,1]:
+                continue
+            data.append(float(line.strip()))
+    return np.array(data)
+
+dist1 = load_data('data/energy/energydata.csv')
+dist2 = load_data('data/magnetisation/magnetisationdata.csv')
+
+n_bins = 30
+
+fix, axs = plt.subplots(1,2,sharey=True,tight_layout=True)
+
+axs[0].hist(dist1, bins=n_bins, density=True, color='blue')
+axs[0].set_title("Energy Probability Distribution")
+axs[0].set_xlabel("Energy")
+axs[0].set_ylabel("Probability Density")
+
+axs[1].hist(dist2, bins=n_bins, density=True, color='red')
+axs[1].set_title("Magnetisation Probability Distribution")
+axs[1].set_xlabel("Magnetisation")
+
+plt.show()
 
