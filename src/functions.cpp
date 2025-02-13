@@ -123,20 +123,12 @@ int varying_b_beta(int D, int N, int N_config, char config_type='h', int R=500){
     /*for(int i = 0; i < 24; i++){
         beta[i] = 0.1 + i*0.2;
     }*/
-    vector<vector<vector<int> > > magnetisation(b.size(), vector<vector<int> >(beta.size(), vector<int>(N_config,  1)));
-    vector<vector<vector<double> > > energies(b.size(), vector<vector<double> >(beta.size(), vector<double>(N_config, 1)));
+    
     for(int i = 0; i < b.size(); i++){
         for(int j = 0; j < beta.size(); j++){
         //call metropolis algorithm for each step
         auto result = replica_method(D, N, beta[j], b[i], N_config, config_type, R);
-        auto spin = std::get<0>(result);
-        auto energy = std::get<1>(result);
-
-        //add total spin for the configuration to the magnetisattion
-        magnetisation[i][j] = spin;
-
-        //add energy to total energies
-        energies[i][j] = energy;;
+    
         }
     }
     return 0;
