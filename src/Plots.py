@@ -5,20 +5,18 @@ import pandas as pd
 import csv
 import random
 
-"""def split_large_csv():
-    for i,chunk in enumerate(pd.read_csv('energy.csv', chunksize=501000)):
-        filename = f'energy_{i}.csv'
+def split_large_csv():
+    for i,chunk in enumerate(pd.read_csv('data/energy_task2.csv', chunksize=1002)):
+        filename = f'data/task2/energy_task2_{i}.csv'
         chunk.to_csv(filename, index=False)
         print(f'created: {filename}')
 
-    for j,chunk in enumerate(pd.read_csv('magnetisation.csv', chunksize=501000)):
-        filename = f'magnetisation_{j}.csv' 
+    for j,chunk in enumerate(pd.read_csv('data/magnetisation_task2.csv', chunksize=1002)):
+        filename = f'data/task2/magnetisation_task2_{j}.csv' 
         chunk.to_csv(filename, index=False)
         print(f'created: {filename}')
 
-
-split_large_csv()"""
-
+#split_large_csv()
 
 def calculate_mean_and_error(csv_filename: str, start_config: int=100, end_config: int=1000):
     replica_means = []
@@ -121,8 +119,36 @@ def magnetization_plot():
     plt.show()
 #magnetization_plot()
 
-csv_filename = 'data/energy/energydata.csv'
+def task4():
+    energies = np.zeros(500)
+    magnetisation = np.zeros(500)
+    for i in range(0, 500):
+        filename = f'data/task2/energy_task2_{i}.csv'
+        data = pd.read_csv(filename)
+        data = data.apply(pd.to_numeric, errors='coerce') 
+        data = data.dropna()
+        thermalised_data = data.iloc[200:1002]
+        energies[i] = np.mean(thermalised_data)
+
+        filename = f'data/task2/magnetisation_task2_{i}.csv'
+        data = pd.read_csv(filename)
+        data = data.apply(pd.to_numeric, errors='coerce') 
+        data = data.dropna()
+        thermalised_data = data.iloc[200:1002]
+        magnetisation[i] = np.mean(thermalised_data)
+
+    plt.figure()
+    plt.hist(energies)
+    plt.show()
+
+    plt.figure()
+    plt.hist(magnetisation)
+    plt.show()
+
+task4()
+
+#csv_filename = 'data/energy/energydata.csv'
 #plot_data_subset(csv_filename,start_line=2, end_line=1002)
 
-calculate_mean_and_error(csv_filename,start_config=100, end_config=1000)
+#calculate_mean_and_error(csv_filename,start_config=100, end_config=1000)
 
