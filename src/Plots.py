@@ -76,6 +76,8 @@ def process_replica_data(data, replica_means, start_config, end_config):
 
 ############################## Plots ###########################################
 
+#plotting a random replica from the file
+
 def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
     travel = [x*1002 for x in range(1,500)]
 
@@ -93,7 +95,7 @@ def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
 
     plt.yscale('linear')  
     plt.ylim(data.min().min(), data.max().max())  
-    plt.xlim(0,100000)
+    plt.xlim(0,1000)
     plt.xlabel('Configurations')
     plt.ylabel('Energy')
     plt.title('Energy over 1000 Configurations')
@@ -105,31 +107,36 @@ def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
 
 #plot_data_subset(csv_filename,start_line=2, end_line=1002)
 
-def task4():
-    energies = np.zeros(500)
-    magnetisation = np.zeros(500)
-    for i in range(0, 500):
-        filename = f'data/task2/energy_task2_{i}.csv'
-        data = pd.read_csv(filename)
-        data = data.apply(pd.to_numeric, errors='coerce') 
-        data = data.dropna()
-        thermalised_data = data.iloc[200:1002]
-        energies[i] = np.mean(thermalised_data)
+#Histograms for Probability Distributions
 
-        filename = f'data/task2/magnetisation_task2_{i}.csv'
-        data = pd.read_csv(filename)
-        data = data.apply(pd.to_numeric, errors='coerce') 
-        data = data.dropna()
-        thermalised_data = data.iloc[200:1002]
-        magnetisation[i] = np.mean(thermalised_data)
+def load_data(file):
+    data = []
+    with open(file, "r") as f:
+        for i, line in enumerate(f):
+            if (i%1002) in [0,1]:
+                continue
+            data.append(float(line.strip()))
+    return np.array(data)
 
-    plt.figure()
-    plt.hist(energies)
-    plt.show()
+dist1 = load_data('data/energy/energydata.csv')
+dist2 = load_data('data/magnetisation/magnetisationdata.csv')
 
-    plt.figure()
-    plt.hist(magnetisation)
-    plt.show()
+n_bins = 30
+
+fix, axs = plt.subplots(1,2,sharey=True,tight_layout=True)
+
+axs[0].hist(dist1, bins=n_bins, density=True, color='blue')
+axs[0].set_title("Energy Probability Distribution")
+axs[0].set_xlabel("Energy")
+axs[0].set_ylabel("Probability Density")
+
+axs[1].hist(dist2, bins=n_bins, density=True, color='red')
+axs[1].set_title("Magnetisation Probability Distribution")
+axs[1].set_xlabel("Magnetisation")
+
+plt.show()
+
+#expectation values of the energy and magnetisation for different sets of parameters
 
 def final_plot():
     x = [10, 5.0, 4.6, 4.2, 3.8, 3.4, 1/0.3, 3.0, 2.8, 2.6, 2.4, 2.2,1/0.5, 1/0.7, 1/0.9, 1/1.1, 1/1.3, 1/1.5, 1/1.7, 1/1.9, 1/2.1, 1/2.3, 1/2.5, 1/2.7, 1/2.9, 1/3.1, 1/3.3, 1/3.5, 1/3.7, 1/3.9, 1/4.1, 1/4.3, 1/4.5, 1/4.7] # Shared X-axis values
@@ -186,35 +193,5 @@ def final_plot():
     # Show plot
     plt.show()
 
-task4()
-
 final_plot()
 
-################################ Histograms for Probability Distributions ##########################
-
-def load_data(file):
-    data = []
-    with open(file, "r") as f:
-        for i, line in enumerate(f):
-            if (i%1002) in [0,1]:
-                continue
-            data.append(float(line.strip()))
-    return np.array(data)
-
-dist1 = load_data('data/energy/energydata.csv')
-dist2 = load_data('data/magnetisation/magnetisationdata.csv')
-
-n_bins = 30
-
-fix, axs = plt.subplots(1,2,sharey=True,tight_layout=True)
-
-axs[0].hist(dist1, bins=n_bins, density=True, color='blue')
-axs[0].set_title("Energy Probability Distribution")
-axs[0].set_xlabel("Energy")
-axs[0].set_ylabel("Probability Density")
-
-axs[1].hist(dist2, bins=n_bins, density=True, color='red')
-axs[1].set_title("Magnetisation Probability Distribution")
-axs[1].set_xlabel("Magnetisation")
-
-plt.show()
