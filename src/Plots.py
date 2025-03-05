@@ -107,16 +107,21 @@ def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
 
 #plot_data_subset(csv_filename,start_line=2, end_line=1002)
 
-#Histograms for Probability Distributions
+#Histograms for Probability Distributions, REVISITED
 
 def load_data(file):
-    data = []
-    with open(file, "r") as f:
-        for i, line in enumerate(f):
-            if (i%1002) in [0,1]:
-                continue
-            data.append(float(line.strip()))
-    return np.array(data)
+
+    replica_size = 1000
+    num_replicas = 500
+    
+    travel = [x*1002 for x in range(1,500)]
+    N = random.choice(travel)
+    print(N)
+    data = pd.read_csv(file).iloc[N:N+1+replica_size]
+    data = data.apply(pd.to_numeric, errors='coerce').dropna()
+
+    return data.values.flatten()
+
 
 dist1 = load_data('data/energy/energydata.csv')
 dist2 = load_data('data/magnetisation/magnetisationdata.csv')
@@ -193,5 +198,5 @@ def final_plot():
     # Show plot
     plt.show()
 
-final_plot()
+#final_plot()
 
