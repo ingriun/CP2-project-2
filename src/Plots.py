@@ -107,41 +107,69 @@ def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
 
 #plot_data_subset(csv_filename,start_line=2, end_line=1002)
 
-#Histograms for Probability Distributions, REVISITED
+##################### Histograms for Probability Distributions, REVISITED ###############################
 
 def load_data(file):
 
     replica_size = 1000
-    num_replicas = 500
     
     travel = [x*1002 for x in range(1,500)]
     N = random.choice(travel)
     print(N)
-    data = pd.read_csv(file).iloc[N:N+1+replica_size]
+    data = pd.read_csv(file).iloc[N+100:N+1+replica_size]
     data = data.apply(pd.to_numeric, errors='coerce').dropna()
 
     return data.values.flatten()
+
+def load_all_replicas(file):
+    replica_size = 1000
+    
+    travel = [x*1002 for x in range(1,500)]
+    data = pd.read_csv(file)
+
+    replicas = []
+    for N in travel:
+        replica_data = data.iloc[N+100:N+1+replica_size].apply(pd.to_numeric, errors='coerce').dropna().values.flatten()
+        replicas.append(replica_data)
+
+    return np.array(replicas, dtype=np.float64)
+
+def compute_histogram_stats(replicas, bins):    
+    all_histograms = np.array([np.histogram(rep, bins=bins, density=True)[0] for rep in replicas])
+    bin_means = np.mean(all_histograms, axis=0)
+    bin_std = np.std(all_histograms, axis=0)
+
+    return bin_means, bin_std
 
 
 dist1 = load_data('data/energy/energydata.csv')
 dist2 = load_data('data/magnetisation/magnetisationdata.csv')
 
+energy_replicas = load_all_replicas('data/energy/energydata.csv')
+magnetisation_replicas = load_all_replicas('data/magnetisation/magnetisationdata.csv')
+
 n_bins = 30
+bin_edges = np.histogram_bin_edges(dist1, bins=n_bins)
+
+energy_means, energy_errors = compute_histogram_stats(energy_replicas, bins=n_bins)
+magnetisation_means, magnetisation_errors = compute_histogram_stats(magnetisation_replicas, bins=n_bins)
 
 fix, axs = plt.subplots(1,2,sharey=True,tight_layout=True)
 
 axs[0].hist(dist1, bins=n_bins, density=True, color='blue')
+axs[0].errorbar((bin_edges[:-1] +  bin_edges[1:])/2, energy_means, yerr = energy_errors, fmt='o', color='black')
 axs[0].set_title("Energy Probability Distribution")
 axs[0].set_xlabel("Energy")
 axs[0].set_ylabel("Probability Density")
 
 axs[1].hist(dist2, bins=n_bins, density=True, color='red')
+axs[1].errorbar((bin_edges[:-1] +  bin_edges[1:])/2, magnetisation_means, yerr = magnetisation_errors, fmt='o', color='black')
 axs[1].set_title("Magnetisation Probability Distribution")
 axs[1].set_xlabel("Magnetisation")
 
 plt.show()
 
-#expectation values of the energy and magnetisation for different sets of parameters
+############### expectation values of the energy and magnetisation for different sets of parameters ###############################
 
 def final_plot():
     x = [10, 5.0, 4.6, 4.2, 3.8, 3.4, 1/0.3, 3.0, 2.8, 2.6, 2.4, 2.2,1/0.5, 1/0.7, 1/0.9, 1/1.1, 1/1.3, 1/1.5, 1/1.7, 1/1.9, 1/2.1, 1/2.3, 1/2.5, 1/2.7, 1/2.9, 1/3.1, 1/3.3, 1/3.5, 1/3.7, 1/3.9, 1/4.1, 1/4.3, 1/4.5, 1/4.7] # Shared X-axis values
