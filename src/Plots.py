@@ -109,18 +109,6 @@ def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
 
 ##################### Histograms for Probability Distributions, REVISITED ###############################
 
-def load_data(file):
-
-    replica_size = 1000
-    
-    travel = [x*1002 for x in range(1,500)]
-    N = random.choice(travel)
-    print(N)
-    data = pd.read_csv(file).iloc[N+100:N+1+replica_size]
-    data = data.apply(pd.to_numeric, errors='coerce').dropna()
-
-    return data.values.flatten()
-
 def load_all_replicas(file):
     replica_size = 1000
     
@@ -141,29 +129,26 @@ def compute_histogram_stats(replicas, bins):
 
     return bin_means, bin_std
 
-
-dist1 = load_data('data/energy/energydata.csv')
-dist2 = load_data('data/magnetisation/magnetisationdata.csv')
-
 energy_replicas = load_all_replicas('data/energy/energydata.csv')
 magnetisation_replicas = load_all_replicas('data/magnetisation/magnetisationdata.csv')
 
 n_bins = 30
-bin_edges = np.histogram_bin_edges(dist1, bins=n_bins)
+bin_edges1 = np.histogram_bin_edges(energy_replicas.flatten(), bins=n_bins)
+bin_edges2 = np.histogram_bin_edges(magnetisation_replicas.flatten(), bins=n_bins)
 
-energy_means, energy_errors = compute_histogram_stats(energy_replicas, bins=n_bins)
-magnetisation_means, magnetisation_errors = compute_histogram_stats(magnetisation_replicas, bins=n_bins)
+energy_means, energy_errors = compute_histogram_stats(energy_replicas, bins=bin_edges1)
+magnetisation_means, magnetisation_errors = compute_histogram_stats(magnetisation_replicas, bins=bin_edges2)
 
 fix, axs = plt.subplots(1,2,sharey=True,tight_layout=True)
 
-axs[0].hist(dist1, bins=n_bins, density=True, color='blue')
-axs[0].errorbar((bin_edges[:-1] +  bin_edges[1:])/2, energy_means, yerr = energy_errors, fmt='o', color='black')
+axs[0].hist(energy_replicas.flatten(), bins=n_bins, density=True, color='blue')
+axs[0].errorbar((bin_edges1[:-1] +  bin_edges1[1:])/2, energy_means, yerr = energy_errors, fmt='o', color='black')
 axs[0].set_title("Energy Probability Distribution")
 axs[0].set_xlabel("Energy")
 axs[0].set_ylabel("Probability Density")
 
-axs[1].hist(dist2, bins=n_bins, density=True, color='red')
-axs[1].errorbar((bin_edges[:-1] +  bin_edges[1:])/2, magnetisation_means, yerr = magnetisation_errors, fmt='o', color='black')
+axs[1].hist(magnetisation_replicas.flatten(), bins=n_bins, density=True, color='red')
+axs[1].errorbar((bin_edges2[:-1] +  bin_edges2[1:])/2, magnetisation_means, yerr = magnetisation_errors, fmt='o', color='black')
 axs[1].set_title("Magnetisation Probability Distribution")
 axs[1].set_xlabel("Magnetisation")
 
