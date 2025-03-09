@@ -112,12 +112,12 @@ def plot_data_subset(csv_filename,start_line: int=2, end_line: int=1002):
 def load_all_replicas(file):
     replica_size = 1000
     
-    travel = [x*1002 for x in range(1,500)]
+    travel = [x*1002 for x in range(0,500)]
     data = pd.read_csv(file)
 
     replicas = []
     for N in travel:
-        replica_data = data.iloc[N+100:N+1+replica_size].apply(pd.to_numeric, errors='coerce').dropna().values.flatten()
+        replica_data = data.iloc[N+100:N+1+replica_size].apply(pd.to_numeric, errors='coerce').dropna().values.flatten() #ensuring only values after thermalisation are considere
         replicas.append(replica_data)
 
     return np.array(replicas, dtype=np.float64)
@@ -143,12 +143,14 @@ fix, axs = plt.subplots(1,2,sharey=True,tight_layout=True)
 
 axs[0].hist(energy_replicas.flatten(), bins=n_bins, density=True, color='blue')
 axs[0].errorbar((bin_edges1[:-1] +  bin_edges1[1:])/2, energy_means, yerr = energy_errors, fmt='o', color='black')
+axs[0].set_ylim(0,0.004)
 axs[0].set_title("Energy Probability Distribution")
 axs[0].set_xlabel("Energy")
 axs[0].set_ylabel("Probability Density")
 
 axs[1].hist(magnetisation_replicas.flatten(), bins=n_bins, density=True, color='red')
 axs[1].errorbar((bin_edges2[:-1] +  bin_edges2[1:])/2, magnetisation_means, yerr = magnetisation_errors, fmt='o', color='black')
+axs[1].set_ylim(0,0.004)
 axs[1].set_title("Magnetisation Probability Distribution")
 axs[1].set_xlabel("Magnetisation")
 
